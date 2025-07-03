@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -42,38 +43,36 @@ android {
 
 dependencies {
 
-    implementation (androidx.appcompat:appcompat:1.6.1)
-    implementation (com.google.android.material:material:1.8.0)
-    implementation (androidx.constraintlayout:constraintlayout:2.1.4)
+    // AndroidX Libraries
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.constraintlayout)
 
-    // Room Database - Kompatible Versionen für Android 8
-    implementation (androidx.room:room-runtime:2.4.3)
-    implementation (androidx.room:room-ktx:2.4.3)
-    kapt (androidx.room:room-compiler:2.4.3)
+// Room Database - Kompatible Versionen für Android 8
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     // OpenStreetMap (OSMDroid) - Stabile Version für Android 8
-    implementation (org.osmdroid:osmdroid-android:6.1.14)
-
-    // Location Services - Kompatibel mit Android 8
-    implementation (com.google.android.gms:play-services-location:20.0.0)
-
-    // Image Loading - Kompatible Version
-    implementation (com.github.bumptech.glide:glide:4.14.2)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
+    implementation(libs.glide)
 
     // Navigation - Kompatible Versionen
-    implementation (androidx.navigation:navigation-fragment-ktx:2.5.3)
-    implementation (androidx.navigation:navigation-ui-ktx:2.5.3)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 
     // ViewModel & LiveData - Android 8 kompatibel
-    implementation (androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2)
-    implementation (androidx.lifecycle:lifecycle-livedata-ktx:2.6.2)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
 
-    // Coroutines - Kompatible Version
-    implementation (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4)
+
+    implementation(libs.coroutines.android)
 
     // Fragment KTX für Android 8
-    implementation (androidx.fragment:fragment-ktx:1.5.7)
+    implementation(libs.fragment.ktx)
 
+    // Compose Libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
