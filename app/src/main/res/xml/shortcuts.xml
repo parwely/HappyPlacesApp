@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="add_place"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_place"
+        android:shortcutShortLabel="@string/add_place_short"
+        android:shortcutLongLabel="@string/add_place_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.yourname.happyplacesapp"
+            android:targetClass="com.yourname.happyplacesapp.ui.AddPlaceActivity" />
+    </shortcut>
+</shortcuts>

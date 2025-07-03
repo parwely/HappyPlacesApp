@@ -51,6 +51,9 @@ dependencies {
 // Room Database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.adapters)
+    implementation(libs.androidx.compiler)
     kapt(libs.room.compiler)
 
     // OpenStreetMap (OSMDroid)
