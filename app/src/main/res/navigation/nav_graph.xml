@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/placesListFragment"
-        android:name="com.yourname.happyplacesapp.ui.PlacesListFragment"
+        android:name="com.example.happyplacesapp.ui.fragements.PlacesListFragment"
         android:label="Happy Places" >
         <action
             android:id="@+id/action_list_to_add"

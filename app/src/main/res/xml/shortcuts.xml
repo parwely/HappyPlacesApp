@@ -8,7 +8,7 @@
         android:shortcutLongLabel="@string/add_place_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.yourname.happyplacesapp"
-            android:targetClass="com.yourname.happyplacesapp.ui.AddPlaceActivity" />
+            android:targetPackage="com.example.happyplacesapp"
+            android:targetClass="com.example.happyplacesapp.ui.fragements.AddPlaceFragment" />
     </shortcut>
 </shortcuts>

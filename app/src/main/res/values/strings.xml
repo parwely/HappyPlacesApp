@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HappyPlacesApp</string>
+    <string name="app_name">Happy Places App</string>
+    <string name="add_place_short">Ort hinzufügen</string>
+    <string name="add_place_long">Neuen Lieblingsort hinzufügen</string>
 </resources>

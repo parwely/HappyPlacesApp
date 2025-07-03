@@ -1,3 +1,5 @@
+package com.example.happyplacesapp.data.database
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,8 +12,8 @@ data class HappyPlace(
     val location: String,
     val latitude: Double,
     val longitude: Double,
-    val imagePath: String = "",
-    val notes: String = "",
-    val category: String = "Allgemein",
+    val imagePath: String,
+    val notes: String,
+    val category: String,
     val dateAdded: Long = System.currentTimeMillis()
 )

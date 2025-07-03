@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.happyplacesapp"
-    compileSdk = 33
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.happyplacesapp"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -36,6 +36,15 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = true
+    }
+}
+configurations {
+    all {
+        exclude(group = "com.google.guava", module = "listenablefuture")
     }
 }
 
