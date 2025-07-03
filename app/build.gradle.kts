@@ -48,12 +48,12 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.constraintlayout)
 
-// Room Database - Kompatible Versionen für Android 8
+// Room Database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
-    // OpenStreetMap (OSMDroid) - Stabile Version für Android 8
+    // OpenStreetMap (OSMDroid)
     implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
     implementation(libs.glide)
@@ -62,7 +62,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    // ViewModel & LiveData - Android 8 kompatibel
+    // ViewModel & LiveData
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.livedata)
 
