@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Hardware Features -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,7 +31,6 @@
         android:theme="@style/Theme.HappyPlacesApp"
         tools:targetApi="31">
 
-        <!-- Provider muss INNERHALB der application stehen -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -30,7 +41,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Ihre Activities hier -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -39,6 +49,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.fragements.AddPlaceActivity"
+            android:exported="false" />
 
     </application>
 

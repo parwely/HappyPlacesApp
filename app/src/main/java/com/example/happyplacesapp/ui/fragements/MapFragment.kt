@@ -1,3 +1,5 @@
+package com.example.happyplacesapp.ui.fragements
+
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -6,9 +8,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.happyplacesapp.databinding.FragmentMapBinding
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
 
 class MapFragment : Fragment() {
     private var _binding: FragmentMapBinding? = null
@@ -24,7 +29,10 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // OSMDroid Konfiguration
-        Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
+        org.osmdroid.config.Configuration.getInstance().load(
+            requireContext(),
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+        )
 
         mapView = binding.mapView
         mapView.setTileSource(TileSourceFactory.MAPNIK)
@@ -41,16 +49,33 @@ class MapFragment : Fragment() {
     }
 
     private fun setupMapClickListener() {
-        mapView.overlays.add(object : Overlay() {
-            override fun onSingleTapConfirmed(e: MotionEvent?, mapView: MapView?): Boolean {
-                val projection = mapView?.projection
-                val geoPoint = projection?.fromPixels(e?.x?.toInt() ?: 0, e?.y?.toInt() ?: 0)
-                geoPoint?.let {
-                    // Neuen Ort an dieser Position hinzufügen
+        val mapEventsReceiver = object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                p?.let {
                     navigateToAddPlace(it.latitude, it.longitude)
                 }
                 return true
             }
-        })
+
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                return false
+            }
+        }
+
+        val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
+        mapView.overlays.add(mapEventsOverlay)
+    }
+
+    private fun loadPlacesOnMap() {
+        // TODO: Implementierung für das Laden der Places
+    }
+
+    private fun navigateToAddPlace(latitude: Double, longitude: Double) {
+        // TODO: Navigation zur AddPlace Activity/Fragment
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -7,6 +7,6 @@ import com.example.happyplacesapp.R
 class AddPlaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.navigation.fragment_add_place)
+        setContentView(R.layout.activity_add_place)  // RICHTIG - Layout-Ressource
     }
 }

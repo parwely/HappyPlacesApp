@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/placesListFragment">
 
     <fragment
         android:id="@+id/placesListFragment"
         android:name="com.example.happyplacesapp.ui.fragements.PlacesListFragment"
-        android:label="Happy Places" >
+        android:label="Happy Places"
+        tools:layout="@layout/fragment_places_list">
         <action
-            android:id="@+id/action_list_to_add"
-            app:destination="@id/addPlaceFragment" />
+            android:id="@+id/action_placesListFragment_to_addPlaceActivity"
+            app:destination="@id/addPlaceActivity" />
         <action
-            android:id="@+id/action_list_to_map"
+            android:id="@+id/action_placesListFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/addPlaceFragment"
-        android:name="com.yourname.happyplacesapp.ui.AddPlaceFragment"
-        android:label="Ort hinzufügen" />
-
-    <fragment
         android:id="@+id/mapFragment"
-        android:name="com.yourname.happyplacesapp.ui.MapFragment"
-        android:label="Karte" />
+        android:name="com.example.happyplacesapp.ui.fragements.MapFragment"
+        android:label="Karte"
+        tools:layout="@layout/fragment_map" />
+
+    <activity
+        android:id="@+id/addPlaceActivity"
+        android:name="com.example.happyplacesapp.ui.fragements.AddPlaceActivity"
+        android:label="Ort hinzufügen"
+        tools:layout="@layout/activity_add_place" />
 
 </navigation>
