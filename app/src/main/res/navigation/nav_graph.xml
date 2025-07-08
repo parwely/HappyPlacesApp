@@ -11,23 +11,26 @@
         android:label="Happy Places"
         tools:layout="@layout/fragment_places_list">
         <action
-            android:id="@+id/action_placesListFragment_to_addPlaceActivity"
-            app:destination="@id/addPlaceActivity" />
-        <action
             android:id="@+id/action_placesListFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_placesListFragment_to_addPlaceFragment"
+            app:destination="@id/addPlaceFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.happyplacesapp.ui.fragements.MapFragment"
-        android:label="Karte"
-        tools:layout="@layout/fragment_map" />
+        android:label="Map"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_addPlaceFragment"
+            app:destination="@id/addPlaceFragment" />
+    </fragment>
 
-    <activity
-        android:id="@+id/addPlaceActivity"
-        android:name="com.example.happyplacesapp.ui.fragements.AddPlaceActivity"
-        android:label="Ort hinzufügen"
-        tools:layout="@layout/activity_add_place" />
-
+    <fragment
+        android:id="@+id/addPlaceFragment"
+        android:name="com.example.happyplacesapp.ui.fragements.AddPlaceFragment"
+        android:label="Add Place"
+        tools:layout="@layout/fragment_add_place" />
 </navigation>

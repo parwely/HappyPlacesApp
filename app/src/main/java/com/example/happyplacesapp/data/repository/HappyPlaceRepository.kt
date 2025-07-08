@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.happyplacesapp.data.database.HappyPlace
 import com.example.happyplacesapp.data.database.HappyPlaceDao
-import kotlinx.coroutines.Dispatchers
 
 class HappyPlaceRepository(private val happyPlaceDao: HappyPlaceDao) {
 
