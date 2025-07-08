@@ -6,21 +6,30 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HappyPlaceDao {
 
-    @Query("SELECT * FROM happy_places ORDER BY dateAdded DESC")
-    fun getAllPlaces(): Flow<List<HappyPlace>>
+    @Query("SELECT * FROM happy_places_table ORDER BY dateAdded DESC")
+    fun getAllHappyPlaces(): Flow<List<HappyPlace>>
 
-    @Query("SELECT * FROM happy_places WHERE id = :id")
-    suspend fun getPlaceById(id: Int): HappyPlace?
+    @Query("SELECT * FROM happy_places_table WHERE id = :id")
+    suspend fun getHappyPlaceById(id: Long): HappyPlace?
+
+    @Query("SELECT * FROM happy_places_table WHERE title LIKE :searchQuery OR location LIKE :searchQuery")
+    suspend fun searchHappyPlaces(searchQuery: String): List<HappyPlace>
+
+    @Query("SELECT * FROM happy_places_table WHERE category = :category")
+    suspend fun getHappyPlacesByCategory(category: String): List<HappyPlace>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlace(place: HappyPlace): Long
+    suspend fun insertHappyPlace(happyPlace: HappyPlace): Long
 
     @Update
-    suspend fun updatePlace(place: HappyPlace): Int
+    suspend fun updateHappyPlace(happyPlace: HappyPlace): Int
 
     @Delete
-    suspend fun deletePlace(place: HappyPlace): Int
+    suspend fun deleteHappyPlace(happyPlace: HappyPlace): Int
 
-    @Query("SELECT * FROM happy_places WHERE title LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%'")
-    fun searchPlaces(query: String): Flow<List<HappyPlace>>
+    @Query("DELETE FROM happy_places_table WHERE id = :id")
+    suspend fun deleteHappyPlaceById(id: Long): Int
+
+    @Query("DELETE FROM happy_places_table")
+    suspend fun deleteAllHappyPlaces(): Int
 }

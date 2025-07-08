@@ -4,8 +4,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
-import com.example.happyplacesapp.data.database.HappyPlace
-import com.example.happyplacesapp.data.database.HappyPlaceDao
 
 @Database(
     entities = [HappyPlace::class],
@@ -25,7 +23,7 @@ abstract class HappyPlaceDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     HappyPlaceDatabase::class.java,
-                    "happy_place_database"
+                    "happy_places_database"
                 ).build()
                 INSTANCE = instance
                 instance

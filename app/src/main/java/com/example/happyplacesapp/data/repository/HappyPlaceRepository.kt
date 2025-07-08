@@ -1,20 +1,42 @@
 package com.example.happyplacesapp.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.example.happyplacesapp.data.database.HappyPlace
 import com.example.happyplacesapp.data.database.HappyPlaceDao
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
 
-class HappyPlaceRepository(private val dao: HappyPlaceDao) {
+class HappyPlaceRepository(private val happyPlaceDao: HappyPlaceDao) {
 
-    fun getAllPlaces(): Flow<List<HappyPlace>> = dao.getAllPlaces()
+    fun getAllHappyPlaces(): LiveData<List<HappyPlace>> {
+        return happyPlaceDao.getAllHappyPlaces().asLiveData()
+    }
 
-    suspend fun insertPlace(place: HappyPlace): Long = dao.insertPlace(place)
+    suspend fun getHappyPlaceById(id: Long): HappyPlace? {
+        return happyPlaceDao.getHappyPlaceById(id)
+    }
 
-    suspend fun updatePlace(place: HappyPlace): Int = dao.updatePlace(place)
+    suspend fun insertHappyPlace(happyPlace: HappyPlace): Long {
+        return happyPlaceDao.insertHappyPlace(happyPlace)
+    }
 
-    suspend fun deletePlace(place: HappyPlace): Int = dao.deletePlace(place)
+    suspend fun updateHappyPlace(happyPlace: HappyPlace): Int {
+        return happyPlaceDao.updateHappyPlace(happyPlace)
+    }
 
-    suspend fun getPlaceById(id: Int): HappyPlace? = dao.getPlaceById(id)
+    suspend fun deleteHappyPlace(happyPlace: HappyPlace): Int {
+        return happyPlaceDao.deleteHappyPlace(happyPlace)
+    }
 
-    fun searchPlaces(query: String): Flow<List<HappyPlace>> = dao.searchPlaces(query)
+    suspend fun deleteHappyPlaceById(id: Long): Int {
+        return happyPlaceDao.deleteHappyPlaceById(id)
+    }
+
+    suspend fun searchHappyPlaces(searchQuery: String): List<HappyPlace> {
+        return happyPlaceDao.searchHappyPlaces("%$searchQuery%")
+    }
+
+    suspend fun getHappyPlacesByCategory(category: String): List<HappyPlace> {
+        return happyPlaceDao.getHappyPlacesByCategory(category)
+    }
 }
