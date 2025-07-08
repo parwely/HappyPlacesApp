@@ -3,6 +3,7 @@ package com.example.happyplacesapp.data.database
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import android.content.Context
 
 @Database(
@@ -10,6 +11,7 @@ import android.content.Context
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class HappyPlaceDatabase : RoomDatabase() {
 
     abstract fun happyPlaceDao(): HappyPlaceDao

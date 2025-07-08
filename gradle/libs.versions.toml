@@ -1,25 +1,27 @@
 [versions]
-agp = "8.11.0"
-kotlin = "2.0.21"
-coreKtx = "1.10.1"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2024.09.00"
 
+agp = "8.11.0"
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
+coreKtx = "1.12.0"
 appcompat = "1.6.1"
-material = "1.8.0"
+material = "1.11.0"
 constraintlayout = "2.1.4"
-room = "2.4.3"
+room = "2.6.1"
 osmdroid = "6.1.14"
-play_services_location = "20.0.0"
-glide = "4.14.2"
-navigation = "2.5.3"
-lifecycle = "2.6.2"
-coroutines = "1.6.4"
-fragment = "1.5.7"
+play_services_location = "21.0.1"
+glide = "4.16.0"
+navigation = "2.7.6"
+lifecycle = "2.7.0"
+coroutines = "1.7.3"
+fragment = "1.6.2"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+
 roomCommonJvm = "2.7.2"
 adapters = "3.2.0-alpha11"
 compiler = "3.2.0-alpha11"
@@ -65,10 +67,7 @@ androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", 
 androidx-adapters = { group = "androidx.databinding", name = "adapters", version.ref = "adapters" }
 androidx-compiler = { group = "androidx.databinding", name = "compiler", version.ref = "compiler" }
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = "kotlin-kapt" }
-
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

@@ -1,56 +1,55 @@
-import android.app.Activity
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+package com.example.happyplacesapp.utils
 
-class PermissionHelper(private val activity: Activity) {
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import android.Manifest
+
+class PermissionHelper {
 
     companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 1001
-        const val CAMERA_PERMISSION_REQUEST_CODE = 1002
-        const val STORAGE_PERMISSION_REQUEST_CODE = 1003
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+        private const val BACKGROUND_LOCATION_REQUEST_CODE = 1002
     }
 
-    fun checkAndRequestLocationPermissions(): Boolean {
+    fun checkLocationPermissions(context: Context): Boolean {
         val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-        val missingPermissions = permissions.filter {
-            val it
-            ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
+        return permissions.all { permission ->
+            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
         }
-
-        if (missingPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                activity,
-                missingPermissions.toTypedArray(),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return false
-        }
-        return true
     }
 
-    fun checkAndRequestCameraPermissions(): Boolean {
+    fun requestLocationPermissions(fragment: Fragment) {
         val permissions = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-        val missingPermissions = permissions.filter {
-            ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
-        }
+        fragment.requestPermissions(permissions, LOCATION_PERMISSION_REQUEST_CODE)
+    }
 
-        if (missingPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                activity,
-                missingPermissions.toTypedArray(),
-                CAMERA_PERMISSION_REQUEST_CODE
-            )
-            return false
+    fun checkBackgroundLocationPermission(context: Context): Boolean {
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
         }
-        return true
+    }
+
+    fun requestBackgroundLocationPermission(fragment: Fragment) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            fragment.requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                BACKGROUND_LOCATION_REQUEST_CODE
+            )
+        }
     }
 }
