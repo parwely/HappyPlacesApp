@@ -27,7 +27,7 @@ class PlacesListFragment : Fragment() {
     private val viewModel: HappyPlaceViewModel by viewModels {
         val database = HappyPlaceDatabase.getDatabase(requireContext())
         val repository = HappyPlaceRepository(database.happyPlaceDao())
-        HappyPlaceViewModelFactory(repository)
+        HappyPlaceViewModelFactory(requireActivity().application)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -56,12 +56,12 @@ class PlacesListFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.fabAddPlace.setOnClickListener {
-            findNavController().navigate(R.id.action_placesListFragment_to_addPlaceActivity)
+            findNavController().navigate(R.id.action_placesListFragment_to_addPlaceFragment)
         }
     }
 
     private fun observeViewModel() {
-        viewModel.places.observe(viewLifecycleOwner) { places ->
+        viewModel.allPlaces.observe(viewLifecycleOwner) { places ->
             placesAdapter.submitList(places)
             binding.textViewEmpty.visibility = if (places.isEmpty()) View.VISIBLE else View.GONE
         }

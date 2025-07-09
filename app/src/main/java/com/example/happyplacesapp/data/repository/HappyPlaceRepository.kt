@@ -7,6 +7,8 @@ import com.example.happyplacesapp.data.database.HappyPlaceDao
 
 class HappyPlaceRepository(private val happyPlaceDao: HappyPlaceDao) {
 
+    val allPlaces: LiveData<List<HappyPlace>> = happyPlaceDao.getAllHappyPlaces().asLiveData()
+
     fun getAllHappyPlaces(): LiveData<List<HappyPlace>> {
         return happyPlaceDao.getAllHappyPlaces().asLiveData()
     }
@@ -15,16 +17,16 @@ class HappyPlaceRepository(private val happyPlaceDao: HappyPlaceDao) {
         return happyPlaceDao.getHappyPlaceById(id)
     }
 
-    suspend fun insertHappyPlace(happyPlace: HappyPlace): Long {
-        return happyPlaceDao.insertHappyPlace(happyPlace)
+    suspend fun insert(place: HappyPlace) {
+        happyPlaceDao.insert(place)
     }
 
-    suspend fun updateHappyPlace(happyPlace: HappyPlace): Int {
-        return happyPlaceDao.updateHappyPlace(happyPlace)
+    suspend fun update(place: HappyPlace) {
+        happyPlaceDao.update(place)
     }
 
-    suspend fun deleteHappyPlace(happyPlace: HappyPlace): Int {
-        return happyPlaceDao.deleteHappyPlace(happyPlace)
+    suspend fun delete(place: HappyPlace) {
+        happyPlaceDao.delete(place)
     }
 
     suspend fun deleteHappyPlaceById(id: Long): Int {

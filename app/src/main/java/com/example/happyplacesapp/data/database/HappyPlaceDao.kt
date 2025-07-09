@@ -19,13 +19,13 @@ interface HappyPlaceDao {
     suspend fun getHappyPlacesByCategory(category: String): List<HappyPlace>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHappyPlace(happyPlace: HappyPlace): Long
+    suspend fun insert(happyPlace: HappyPlace): Long
 
     @Update
-    suspend fun updateHappyPlace(happyPlace: HappyPlace): Int
+    suspend fun update(happyPlace: HappyPlace): Int
 
     @Delete
-    suspend fun deleteHappyPlace(happyPlace: HappyPlace): Int
+    suspend fun delete(happyPlace: HappyPlace): Int
 
     @Query("DELETE FROM happy_places_table WHERE id = :id")
     suspend fun deleteHappyPlaceById(id: Long): Int

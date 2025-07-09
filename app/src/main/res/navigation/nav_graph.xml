@@ -8,29 +8,39 @@
     <fragment
         android:id="@+id/placesListFragment"
         android:name="com.example.happyplacesapp.ui.fragements.PlacesListFragment"
-        android:label="Happy Places"
+        android:label="fragment_places_list"
         tools:layout="@layout/fragment_places_list">
-        <action
-            android:id="@+id/action_placesListFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
         <action
             android:id="@+id/action_placesListFragment_to_addPlaceFragment"
             app:destination="@id/addPlaceFragment" />
+        <action
+            android:id="@+id/action_placesListFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPlaceFragment"
+        android:name="com.example.happyplacesapp.ui.fragements.AddPlaceFragment"
+        android:label="fragment_add_place"
+        tools:layout="@layout/fragment_add_place">
+        <argument
+            android:name="latitude"
+            android:defaultValue="0.0"
+            app:argType="float" />
+        <argument
+            android:name="longitude"
+            android:defaultValue="0.0"
+            app:argType="float" />
     </fragment>
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.happyplacesapp.ui.fragements.MapFragment"
-        android:label="Map"
+        android:label="fragment_map"
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_addPlaceFragment"
             app:destination="@id/addPlaceFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/addPlaceFragment"
-        android:name="com.example.happyplacesapp.ui.fragements.AddPlaceFragment"
-        android:label="Add Place"
-        tools:layout="@layout/fragment_add_place" />
 </navigation>
