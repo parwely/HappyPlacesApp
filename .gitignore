@@ -1,5 +1,6 @@
 # Lokale Android/Java/Gradle Dateien
 local.properties
+gradle.properties
 *.iml
 .gradle/
 build/
