@@ -9,6 +9,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.example.happyplacesapp"
-            android:targetClass="com.example.happyplacesapp.ui.fragements.AddPlaceFragment" />
+            android:targetClass="com.example.happyplacesapp.ui.fragments.AddPlaceFragment" />
     </shortcut>
 </shortcuts>

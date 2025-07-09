@@ -30,6 +30,9 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.HappyPlacesApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -51,8 +54,9 @@
         </activity>
 
         <activity
-            android:name=".ui.fragements.AddPlaceActivity"
-            android:exported="false" />
+            android:name=".ui.fragments.AddPlaceFragment"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
 
     </application>
 

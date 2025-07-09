@@ -3,4 +3,6 @@
     <string name="app_name">Happy Places App</string>
     <string name="add_place_short">Ort hinzufügen</string>
     <string name="add_place_long">Neuen Lieblingsort hinzufügen</string>
+    <string name="google_maps_key">DUMMY_KEY</string>
+    <!-- Keine Definition für google_maps_key hier! Die build.gradle.kts erzeugt die Resource automatisch beim Build. -->
 </resources>

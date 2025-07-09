@@ -17,6 +17,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val mapsApiKey: String? = project.findProperty("MAPS_API_KEY") as String?
+        if (mapsApiKey != null) {
+            resValue("string", "google_maps_key", mapsApiKey)
+        }
     }
 
     buildTypes {
@@ -62,6 +66,9 @@ dependencies {
 
     // OSMDroid für Karten
     implementation("org.osmdroid:osmdroid-android:6.1.17")
+
+    // Google Maps SDK
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")

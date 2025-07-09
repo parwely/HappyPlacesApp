@@ -1,4 +1,4 @@
-package com.example.happyplacesapp.ui.fragements
+package com.example.happyplacesapp.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +30,8 @@ class PlacesListFragment : Fragment() {
         HappyPlaceViewModelFactory(requireActivity().application)
     }
 
+    private var selectedPlace: HappyPlace? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlacesListBinding.inflate(inflater, container, false)
         return binding.root
@@ -45,9 +47,9 @@ class PlacesListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         placesAdapter = PlacesAdapter { place ->
+            selectedPlace = place
             onPlaceClick(place)
         }
-
         binding.recyclerViewPlaces.apply {
             adapter = placesAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -57,6 +59,21 @@ class PlacesListFragment : Fragment() {
     private fun setupClickListeners() {
         binding.fabAddPlace.setOnClickListener {
             findNavController().navigate(R.id.action_placesListFragment_to_addPlaceFragment)
+        }
+        binding.fabEditPlace.setOnClickListener {
+            selectedPlace?.let { place ->
+                val action = PlacesListFragmentDirections.actionPlacesListFragmentToAddPlaceFragment(
+                    latitude = place.latitude.toFloat(),
+                    longitude = place.longitude.toFloat()
+                )
+                findNavController().navigate(action)
+            }
+        }
+        binding.fabDeletePlace.setOnClickListener {
+            selectedPlace?.let { place ->
+                viewModel.delete(place)
+                selectedPlace = null
+            }
         }
     }
 
