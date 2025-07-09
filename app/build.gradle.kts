@@ -2,7 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.google.devtools.ksp") version "1.9.24-1.0.20"
+    id("kotlin-parcelize")
+    id("kotlin-kapt")
 }
 
 android {
@@ -17,10 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val mapsApiKey: String? = project.findProperty("MAPS_API_KEY") as String?
-        if (mapsApiKey != null) {
-            resValue("string", "google_maps_key", mapsApiKey)
-        }
     }
 
     buildTypes {
@@ -41,7 +38,6 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        dataBinding = true
     }
 }
 
@@ -51,10 +47,10 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Room mit KSP
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    // Room mit KAPT (stabiler als KSP)
+    implementation("androidx.room:room-runtime:2.5.0")
+    implementation("androidx.room:room-ktx:2.5.0")
+    kapt("androidx.room:room-compiler:2.5.0")
 
     // ViewModel & LiveData
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
@@ -65,15 +61,19 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
 
     // OSMDroid für Karten
-    implementation("org.osmdroid:osmdroid-android:6.1.17")
-
-    // Google Maps SDK
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
 
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation ("androidx.test:runner:1.5.2")
-    androidTestImplementation ("androidx.test:rules:1.5.0")
-    testImplementation ("junit:junit:4.13.2")
+
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Image Loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
 }

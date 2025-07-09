@@ -1,33 +1,37 @@
 package com.example.happyplacesapp.ui.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.happyplacesapp.data.database.HappyPlace
-import com.example.happyplacesapp.data.database.HappyPlaceDatabase
 import com.example.happyplacesapp.data.repository.HappyPlaceRepository
 import kotlinx.coroutines.launch
 
-class HappyPlaceViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: HappyPlaceRepository
-    val allPlaces: LiveData<List<HappyPlace>>
+class HappyPlaceViewModel(private val repository: HappyPlaceRepository) : ViewModel() {
 
-    init {
-        val dao = HappyPlaceDatabase.getDatabase(application).happyPlaceDao()
-        repository = HappyPlaceRepository(dao)
-        allPlaces = repository.allPlaces
-    }
+    val allPlaces: LiveData<List<HappyPlace>> = repository.allPlaces
 
-    fun insert(place: HappyPlace) = viewModelScope.launch {
+    fun insertPlace(place: HappyPlace) = viewModelScope.launch {
         repository.insert(place)
     }
 
-    fun update(place: HappyPlace) = viewModelScope.launch {
+    fun updatePlace(place: HappyPlace) = viewModelScope.launch {
         repository.update(place)
     }
 
-    fun delete(place: HappyPlace) = viewModelScope.launch {
+    fun deletePlace(place: HappyPlace) = viewModelScope.launch {
         repository.delete(place)
+    }
+
+    suspend fun getPlaceById(id: Long): HappyPlace? {
+        return repository.getPlaceById(id)
+    }
+
+    suspend fun searchPlaces(query: String): List<HappyPlace> {
+        return repository.searchPlaces("%$query%")
+    }
+
+    suspend fun getPlacesByCategory(category: String): List<HappyPlace> {
+        return repository.getPlacesByCategory(category)
     }
 }

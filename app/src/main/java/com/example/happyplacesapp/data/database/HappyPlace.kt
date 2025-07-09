@@ -3,8 +3,10 @@ package com.example.happyplacesapp.data.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ColumnInfo
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "happy_places_table")
 data class HappyPlace(
     @PrimaryKey(autoGenerate = true)
@@ -17,7 +19,7 @@ data class HappyPlace(
     val description: String,
 
     @ColumnInfo(name = "location")
-    val location: String,
+    val location: String = "",
 
     @ColumnInfo(name = "latitude")
     val latitude: Double,
@@ -26,14 +28,20 @@ data class HappyPlace(
     val longitude: Double,
 
     @ColumnInfo(name = "imagePath")
-    val imagePath: String,
+    val imagePath: String = "",
 
     @ColumnInfo(name = "notes")
     val notes: String = "",
 
     @ColumnInfo(name = "category")
-    val category: String = "",
+    val category: String = "Allgemein",
 
     @ColumnInfo(name = "dateAdded")
-    val dateAdded: Long = System.currentTimeMillis()
-) : Serializable
+    val dateAdded: Long = System.currentTimeMillis(),
+
+    @ColumnInfo(name = "isFromCurrentLocation")
+    val isFromCurrentLocation: Boolean = false,
+
+    @ColumnInfo(name = "address")
+    val address: String = ""
+) : Parcelable

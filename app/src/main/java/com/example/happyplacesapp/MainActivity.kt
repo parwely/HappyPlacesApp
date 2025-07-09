@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.happyplacesapp. databinding.ActivityMainBinding
-import android.view.Menu
-import android.view.MenuItem
+import androidx.navigation.ui.setupWithNavController
+import com.example.happyplacesapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,47 +18,17 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         setupNavigation()
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_places_list -> {
-                    navController.navigate(R.id.placesListFragment)
-                    true
-                }
-                R.id.nav_map -> {
-                    navController.navigate(R.id.mapFragment)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_show_map -> {
-                // Navigation zur Kartenanzeige
-                val navHostFragment = supportFragmentManager
-                    .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                navHostFragment.navController.navigate(R.id.mapFragment)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
     private fun setupNavigation() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+        // Setup Bottom Navigation mit NavController
+        binding.bottomNavigation.setupWithNavController(navController)
+
+        // Setup ActionBar mit NavController
         setupActionBarWithNavController(navController)
     }
 

@@ -1,35 +1,35 @@
 package com.example.happyplacesapp.data.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HappyPlaceDao {
 
     @Query("SELECT * FROM happy_places_table ORDER BY dateAdded DESC")
-    fun getAllHappyPlaces(): Flow<List<HappyPlace>>
+    fun getAllHappyPlaces(): LiveData<List<HappyPlace>>
 
     @Query("SELECT * FROM happy_places_table WHERE id = :id")
-    suspend fun getHappyPlaceById(id: Long): HappyPlace?
+    fun getHappyPlaceById(id: Long): HappyPlace?
 
     @Query("SELECT * FROM happy_places_table WHERE title LIKE :searchQuery OR location LIKE :searchQuery")
-    suspend fun searchHappyPlaces(searchQuery: String): List<HappyPlace>
+    fun searchHappyPlaces(searchQuery: String): List<HappyPlace>
 
     @Query("SELECT * FROM happy_places_table WHERE category = :category")
-    suspend fun getHappyPlacesByCategory(category: String): List<HappyPlace>
+    fun getHappyPlacesByCategory(category: String): List<HappyPlace>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(happyPlace: HappyPlace): Long
+    fun insert(happyPlace: HappyPlace): Long
 
     @Update
-    suspend fun update(happyPlace: HappyPlace): Int
+    fun update(happyPlace: HappyPlace): Int
 
     @Delete
-    suspend fun delete(happyPlace: HappyPlace): Int
+    fun delete(happyPlace: HappyPlace): Int
 
     @Query("DELETE FROM happy_places_table WHERE id = :id")
-    suspend fun deleteHappyPlaceById(id: Long): Int
+    fun deleteHappyPlaceById(id: Long): Int
 
     @Query("DELETE FROM happy_places_table")
-    suspend fun deleteAllHappyPlaces(): Int
+    fun deleteAllHappyPlaces(): Int
 }

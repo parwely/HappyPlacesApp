@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Happy Places App</string>
-    <string name="add_place_short">Ort hinzufügen</string>
-    <string name="add_place_long">Neuen Lieblingsort hinzufügen</string>
-    <string name="google_maps_key">DUMMY_KEY</string>
-    <!-- Keine Definition für google_maps_key hier! Die build.gradle.kts erzeugt die Resource automatisch beim Build. -->
+    <string name="app_name">Happy Places</string>
+    <string name="title_activity_main">Happy Places App</string>
+    <string name="add_place">Ort hinzufügen</string>
+    <string name="add_place_short">Hinzufügen</string>
+    <string name="add_place_long">Neuen glücklichen Ort hinzufügen</string>
+    <string name="edit_place">Ort bearbeiten</string>
+    <string name="delete_place">Ort löschen</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="title_hint">Titel</string>
+    <string name="description_hint">Beschreibung</string>
+    <string name="location_hint">Standort</string>
+    <string name="notes_hint">Notizen</string>
+    <string name="category_hint">Kategorie</string>
+    <string name="select_image">Bild auswählen</string>
+    <string name="take_photo">Foto aufnehmen</string>
+    <string name="from_gallery">Aus Galerie</string>
+    <string name="use_current_location">Aktuellen Standort verwenden</string>
+    <string name="permission_required">Berechtigung erforderlich</string>
+    <string name="location_permission_required">Standort-Berechtigung wird benötigt, um Ihren aktuellen Standort zu verwenden.</string>
+    <string name="camera_permission_required">Kamera-Berechtigung wird benötigt, um Fotos aufzunehmen.</string>
+    <string name="empty_places_message">Keine gespeicherten Orte vorhanden.\nTippen Sie auf + um einen neuen Ort hinzuzufügen.</string>
+    <string name="delete_confirmation">Möchten Sie diesen Ort wirklich löschen?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="error_title_required">Titel ist erforderlich</string>
+    <string name="error_description_required">Beschreibung ist erforderlich</string>
+    <string name="error_location_required">Standort ist erforderlich</string>
+    <string name="place_saved">Ort gespeichert</string>
+    <string name="place_updated">Ort aktualisiert</string>
+    <string name="place_deleted">Ort gelöscht</string>
+    <string name="error_saving_place">Fehler beim Speichern des Ortes</string>
+    <string name="search_places">Orte durchsuchen</string>
+    <string name="category_nature">Natur</string>
+    <string name="category_food">Essen</string>
+    <string name="category_relaxation">Entspannung</string>
+    <string name="category_entertainment">Unterhaltung</string>
+    <string name="category_general">Allgemein</string>
+    <string name="map_view">Kartenansicht</string>
+    <string name="list_view">Listenansicht</string>
 </resources>

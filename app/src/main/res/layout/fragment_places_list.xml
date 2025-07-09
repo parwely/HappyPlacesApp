@@ -11,14 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:title="Liste"
+        android:title="Meine Orte"
         android:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPlaces"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar_places_list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,9 +31,10 @@
         android:id="@+id/textViewEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Keine Orte gefunden"
-        android:textSize="18sp"
+        android:text="@string/empty_places_message"
+        android:textSize="16sp"
         android:textColor="@android:color/darker_gray"
+        android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,7 +62,7 @@
         android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:backgroundTint="@color/teal_700"
+        app:backgroundTint="@color/teal_200"
         app:tint="@android:color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -71,7 +74,7 @@
         android:src="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:backgroundTint="@color/teal_700"
+        app:backgroundTint="@android:color/holo_red_light"
         app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
