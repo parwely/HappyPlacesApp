@@ -137,6 +137,10 @@ class AddPlaceFragment : Fragment() {
             requestLocationAndUpdate()
         }
 
+        binding.btnSearchAddress.setOnClickListener {
+            searchManualAddress()
+        }
+
         binding.btnSave.setOnClickListener {
             savePlace()
         }
@@ -176,8 +180,6 @@ class AddPlaceFragment : Fragment() {
                 if (place.imagePath.isNotEmpty()) {
                     loadImageIntoView(place.imagePath)
                 }
-
-                binding.toolbarAddPlace.title = "Ort bearbeiten"
             }
         }
     }
@@ -271,24 +273,11 @@ class AddPlaceFragment : Fragment() {
             return
         }
 
+        Toast.makeText(requireContext(), "Standort wird ermittelt...", Toast.LENGTH_SHORT).show()
+
         try {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    currentLatitude = location.latitude
-                    currentLongitude = location.longitude
-                    updateLocationInfo(currentLatitude, currentLongitude)
-                    Toast.makeText(requireContext(), "Standort erfolgreich ermittelt", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Fallback: Versuche aktuellen Standort anzufordern
-                    requestCurrentLocationUpdate()
-                }
-            }.addOnFailureListener { exception ->
-                Toast.makeText(requireContext(), "Fehler beim Abrufen des Standorts: ${exception.message}", Toast.LENGTH_LONG).show()
-                // Verwende Köln-Koordinaten als Fallback
-                currentLatitude = 50.9375
-                currentLongitude = 6.9603
-                updateLocationInfo(currentLatitude, currentLongitude)
-            }
+            // Direkter Ansatz: Versuche zuerst eine frische Standortanfrage
+            requestCurrentLocationUpdate()
         } catch (e: SecurityException) {
             Toast.makeText(requireContext(), "Standort-Berechtigung fehlt", Toast.LENGTH_SHORT).show()
             requestLocationPermission()
@@ -301,30 +290,96 @@ class AddPlaceFragment : Fragment() {
             return
         }
 
+        if (!isAdded) {
+            return
+        }
+
+        Toast.makeText(requireContext(), "Suche nach GPS-Standort...", Toast.LENGTH_SHORT).show()
+
         try {
             val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
                 com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
-                10000
+                2000 // 2 Sekunden Interval
             ).apply {
                 setMaxUpdates(1)
-                setWaitForAccurateLocation(false)
+                setWaitForAccurateLocation(false) // Akzeptiere auch ungenauere Standorte
+                setMaxUpdateAgeMillis(30000) // Akzeptiere 30 Sekunden alte Locations
             }.build()
 
             val locationCallback = object : com.google.android.gms.location.LocationCallback() {
                 override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+                    if (!isAdded || context == null) {
+                        fusedLocationClient.removeLocationUpdates(this)
+                        return
+                    }
+
                     locationResult.lastLocation?.let { location ->
-                        currentLatitude = location.latitude
-                        currentLongitude = location.longitude
-                        updateLocationInfo(currentLatitude, currentLongitude)
-                        Toast.makeText(requireContext(), "Standort erfolgreich ermittelt", Toast.LENGTH_SHORT).show()
+                        android.util.Log.d("LocationDebug", "GPS-Standort erhalten: Lat=${location.latitude}, Lng=${location.longitude}, Accuracy=${location.accuracy}m")
+
+                        // Sehr lockere Validierung - akzeptiere fast alle Standorte
+                        if (location.latitude != 0.0 && location.longitude != 0.0) {
+                            currentLatitude = location.latitude
+                            currentLongitude = location.longitude
+                            updateLocationInfo(currentLatitude, currentLongitude)
+                            Toast.makeText(requireContext(), "GPS-Standort gefunden! (${location.accuracy.toInt()}m)", Toast.LENGTH_LONG).show()
+                        } else {
+                            android.util.Log.d("LocationDebug", "GPS-Standort ungültig (0,0)")
+                            tryLastKnownLocation()
+                        }
+                    } ?: run {
+                        android.util.Log.d("LocationDebug", "Kein GPS-Standort in Result")
+                        tryLastKnownLocation()
                     }
                     fusedLocationClient.removeLocationUpdates(this)
                 }
             }
 
+            // Kürzerer Timeout (5 Sekunden)
+            val timeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
+            val timeoutRunnable = Runnable {
+                if (isAdded && context != null) {
+                    fusedLocationClient.removeLocationUpdates(locationCallback)
+                    android.util.Log.d("LocationDebug", "GPS-Timeout, versuche letzten bekannten Standort")
+                    tryLastKnownLocation()
+                }
+            }
+            timeoutHandler.postDelayed(timeoutRunnable, 5000)
+
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
         } catch (e: SecurityException) {
-            Toast.makeText(requireContext(), "Standort-Berechtigung fehlt", Toast.LENGTH_SHORT).show()
+            if (isAdded && context != null) {
+                Toast.makeText(requireContext(), "Standort-Berechtigung fehlt", Toast.LENGTH_SHORT).show()
+                useKoelnFallback()
+            }
+        }
+    }
+
+    private fun tryLastKnownLocation() {
+        if (!hasLocationPermission() || !isAdded) {
+            useKoelnFallback()
+            return
+        }
+
+        try {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (!isAdded || context == null) return@addOnSuccessListener
+
+                if (location != null && location.latitude != 0.0 && location.longitude != 0.0) {
+                    android.util.Log.d("LocationDebug", "Letzter bekannter Standort: Lat=${location.latitude}, Lng=${location.longitude}")
+                    currentLatitude = location.latitude
+                    currentLongitude = location.longitude
+                    updateLocationInfo(currentLatitude, currentLongitude)
+                    Toast.makeText(requireContext(), "Letzter bekannter Standort verwendet", Toast.LENGTH_SHORT).show()
+                } else {
+                    android.util.Log.d("LocationDebug", "Kein gültiger letzter Standort verfügbar")
+                    useKoelnFallback()
+                }
+            }.addOnFailureListener {
+                android.util.Log.e("LocationDebug", "Fehler beim Abrufen des letzten Standorts: ${it.message}")
+                useKoelnFallback()
+            }
+        } catch (e: SecurityException) {
+            useKoelnFallback()
         }
     }
 
@@ -354,6 +409,34 @@ class AddPlaceFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun isValidLocation(location: Location): Boolean {
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        // Prüfe auf (0,0) - typischer Fehlerfall
+        if (latitude == 0.0 && longitude == 0.0) {
+            return false
+        }
+
+        // Erweiterte Validierung - lockerer für bessere Standorterkennung
+        // Weltweite Koordinaten akzeptieren (nicht nur Europa)
+        val isValidCoordinates = latitude >= -90.0 && latitude <= 90.0 &&
+                                longitude >= -180.0 && longitude <= 180.0
+
+        // Genauigkeitsprüfung lockerer machen (5km statt 1km)
+        val isAccurate = location.accuracy < 5000f
+
+        // Akzeptiere Koordinaten auch außerhalb Europas für Reisen/Tests
+        return isValidCoordinates && isAccurate
+    }
+
+    private fun useKoelnFallback() {
+        currentLatitude = 50.9375
+        currentLongitude = 6.9603
+        updateLocationInfo(currentLatitude, currentLongitude)
+        Toast.makeText(requireContext(), "Fallback: Köln wird als Standort verwendet", Toast.LENGTH_LONG).show()
     }
 
     private fun updateLocationInfo(latitude: Double, longitude: Double) {
@@ -428,6 +511,45 @@ class AddPlaceFragment : Fragment() {
     private fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun searchManualAddress() {
+        val address = binding.etManualAddress.text.toString().trim()
+
+        if (address.isEmpty()) {
+            binding.etManualAddress.error = "Bitte geben Sie eine Adresse ein"
+            return
+        }
+
+        Toast.makeText(requireContext(), "Suche Adresse: $address", Toast.LENGTH_SHORT).show()
+
+        lifecycleScope.launch {
+            try {
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val addresses = geocoder.getFromLocationName(address, 1)
+
+                if (!addresses.isNullOrEmpty()) {
+                    val foundAddress = addresses[0]
+                    currentLatitude = foundAddress.latitude
+                    currentLongitude = foundAddress.longitude
+
+                    // Zeige gefundene Adresse an
+                    val fullAddress = foundAddress.getAddressLine(0) ?:
+                        "${foundAddress.locality ?: ""}, ${foundAddress.countryName ?: ""}"
+
+                    binding.tvLocationInfo.text = fullAddress
+                    Toast.makeText(requireContext(), "Adresse gefunden!", Toast.LENGTH_SHORT).show()
+
+                    // Leere das Eingabefeld
+                    binding.etManualAddress.text?.clear()
+                } else {
+                    Toast.makeText(requireContext(), "Adresse nicht gefunden. Versuchen Sie es mit einer anderen Eingabe.", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("AddressSearch", "Fehler bei Adresssuche: ${e.message}")
+                Toast.makeText(requireContext(), "Fehler bei der Adresssuche: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

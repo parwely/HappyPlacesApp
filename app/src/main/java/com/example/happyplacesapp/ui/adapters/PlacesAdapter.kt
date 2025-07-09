@@ -9,92 +9,96 @@ import com.bumptech.glide.Glide
 import com.example.happyplacesapp.R
 import com.example.happyplacesapp.data.database.HappyPlace
 import com.example.happyplacesapp.databinding.ItemPlaceBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PlacesAdapter(
     private val onPlaceClick: (HappyPlace) -> Unit
 ) : ListAdapter<HappyPlace, PlacesAdapter.PlaceViewHolder>(DiffCallback()) {
 
-    private var selectedPlaceId: Long? = null
+    private var selectedPlace: HappyPlace? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceViewHolder {
-        val binding = ItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemPlaceBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return PlaceViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         val place = getItem(position)
-        holder.bind(place)
+        holder.bind(place, place == selectedPlace)
     }
 
-    fun getPlaceAt(position: Int): HappyPlace {
-        return getItem(position)
-    }
+    fun getPlaceAt(position: Int): HappyPlace = getItem(position)
 
     fun setSelectedPlace(place: HappyPlace) {
-        val previousSelectedId = selectedPlaceId
-        selectedPlaceId = place.id
+        val previousSelected = selectedPlace
+        selectedPlace = place
 
-        // Aktualisiere vorherige Auswahl
-        if (previousSelectedId != null) {
-            val previousIndex = currentList.indexOfFirst { it.id == previousSelectedId }
-            if (previousIndex != -1) {
-                notifyItemChanged(previousIndex)
-            }
+        // Refresh previous and current selection
+        previousSelected?.let { prevPlace ->
+            val prevIndex = currentList.indexOf(prevPlace)
+            if (prevIndex != -1) notifyItemChanged(prevIndex)
         }
 
-        // Aktualisiere neue Auswahl
-        val newIndex = currentList.indexOfFirst { it.id == place.id }
-        if (newIndex != -1) {
-            notifyItemChanged(newIndex)
-        }
+        val currentIndex = currentList.indexOf(place)
+        if (currentIndex != -1) notifyItemChanged(currentIndex)
     }
 
     fun clearSelection() {
-        val previousSelectedId = selectedPlaceId
-        selectedPlaceId = null
+        val previousSelected = selectedPlace
+        selectedPlace = null
 
-        if (previousSelectedId != null) {
-            val previousIndex = currentList.indexOfFirst { it.id == previousSelectedId }
-            if (previousIndex != -1) {
-                notifyItemChanged(previousIndex)
-            }
+        previousSelected?.let { prevPlace ->
+            val prevIndex = currentList.indexOf(prevPlace)
+            if (prevIndex != -1) notifyItemChanged(prevIndex)
         }
     }
 
-    inner class PlaceViewHolder(private val binding: ItemPlaceBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class PlaceViewHolder(
+        private val binding: ItemPlaceBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(place: HappyPlace) {
+        fun bind(place: HappyPlace, isSelected: Boolean) {
             binding.apply {
                 tvPlaceTitle.text = place.title
                 tvPlaceDescription.text = place.description
                 tvPlaceLocation.text = place.location.ifEmpty {
                     "Lat: ${String.format("%.4f", place.latitude)}, Lng: ${String.format("%.4f", place.longitude)}"
                 }
+                tvPlaceCategory.text = place.category
 
-                // Kategorie anzeigen
-                if (place.category.isNotEmpty()) {
-                    tvPlaceDescription.text = "${place.category} • ${place.description}"
-                }
+                // Format date
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                tvPlaceDate.text = dateFormat.format(Date(place.dateAdded))
 
-                // Bild laden
+                // Load image
                 if (place.imagePath.isNotEmpty()) {
-                    Glide.with(itemView.context)
+                    Glide.with(ivPlaceImage.context)
                         .load(place.imagePath)
                         .placeholder(R.drawable.ic_image_placeholder)
-                        .error(R.drawable.ic_image_placeholder)
-                        .centerCrop()
                         .into(ivPlaceImage)
                 } else {
                     ivPlaceImage.setImageResource(R.drawable.ic_image_placeholder)
                 }
 
-                // Auswahlstatus
-                val isSelected = selectedPlaceId == place.id
-                root.isSelected = isSelected
-                root.alpha = if (isSelected) 0.8f else 1.0f
+                // Set category icon
+                val categoryIcon = when (place.category) {
+                    "Natur" -> R.drawable.ic_nature
+                    "Essen" -> R.drawable.ic_restaurant
+                    "Sport" -> R.drawable.ic_sports
+                    "Kultur" -> R.drawable.ic_culture
+                    else -> R.drawable.ic_place
+                }
+                ivCategoryIcon.setImageResource(categoryIcon)
 
-                // Click Listener
+                // Highlight selection
+                cardPlace.isSelected = isSelected
+                cardPlace.strokeWidth = if (isSelected) 4 else 1
+
                 root.setOnClickListener {
                     onPlaceClick(place)
                 }

@@ -76,9 +76,14 @@ class PlacesListFragment : Fragment() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val place = placesAdapter.getPlaceAt(position)
-                showDeleteConfirmationDialog(place)
+                val position = viewHolder.bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val place = placesAdapter.getPlaceAt(position)
+                    showDeleteConfirmationDialog(place)
+                } else {
+                    // Fallback falls Position ungültig ist
+                    placesAdapter.notifyDataSetChanged()
+                }
             }
         })
 
@@ -124,9 +129,11 @@ class PlacesListFragment : Fragment() {
         selectedPlace = place
         placesAdapter.setSelectedPlace(place)
 
-        // Optional: Navigate to map to show this place
-        val action = PlacesListFragmentDirections.actionPlacesListFragmentToMapFragment()
-        findNavController().navigate(action)
+        // Zeige Toast zur Bestätigung der Auswahl
+        Toast.makeText(requireContext(), "'${place.title}' ausgewählt", Toast.LENGTH_SHORT).show()
+
+        // NICHT automatisch zur Karte navigieren
+        // Benutzer kann jetzt Edit/Delete-Buttons verwenden
     }
 
     private fun navigateToAddPlace() {

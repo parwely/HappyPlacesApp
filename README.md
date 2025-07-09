@@ -1,148 +1,157 @@
-# Happy Places App 🌟
+# Happy Places App 
 
-Eine moderne Android-App zum Speichern und Verwalten Ihrer Lieblingsorte mit interaktiver Karte und Kamera-Funktionalität.
+- **Bearbeiten**: Ort in Liste auswählen → Edit-Button (Stift-Icon)
+- **Löschen**: 
+  - Swipe nach links/rechts in der Liste
+  - Ort auswählen → Delete-Button (Papierkorb-Icon)
+- **Anzeigen**: Marker auf der Karte antippen
 
-## Features ✨
+### Kategorien
+Wählen Sie aus 7 verschiedenen Kategorien:
+- **Allgemein** - Standard-Kategorie
+- **Natur** - Parks, Wanderwege, Aussichtspunkte
+- 🍽**Essen** - Restaurants, Cafés, Bars
+- **Entspannung** - Spas, ruhige Orte
+- **Unterhaltung** - Kinos, Theater, Events
+- **Sport** - Fitnessstudios, Sportplätze
+- **Kultur** - Museen, Denkmäler, Sehenswürdigkeiten
 
-### Kernfunktionen
-- **Orte speichern**: Titel, Beschreibung, Standort und Fotos
-- **Interaktive Karte**: OpenStreetMap-Integration mit Markern
-- **Kamera-Integration**: Fotos direkt aufnehmen oder aus Galerie wählen
-- **Kategorien**: Natur, Essen, Entspannung, Unterhaltung, Sport, Kultur
-- **Notizen**: Persönliche Notizen zu jedem Ort
-- **Standort-Services**: Aktueller Standort oder manuell auf Karte wählen
 
-### Benutzeroberfläche
-- **Zwei Hauptansichten**: Liste und Karte
-- **Intuitive Navigation**: Bottom Navigation zwischen Ansichten
-- **Material Design**: Moderne UI mit Material Components
-- **Swipe-to-Delete**: Orte einfach durch Wischen löschen
-- **FAB-Buttons**: Schneller Zugriff auf Hauptfunktionen
 
-## Technologie Stack 🛠️
-
-### Android
-- **Kotlin** - Programmiersprache
-- **Android Jetpack** - Architecture Components
-- **Room Database** - Lokale Datenspeicherung
-- **Navigation Component** - Fragment-Navigation
-- **View Binding** - Type-safe View-Zugriff
-
-### Karten & Standort
-- **OpenStreetMap (OSMDroid)** - Kartenanzeige
-- **Google Play Services Location** - Standortdienste
-- **Geocoder** - Adressauflösung
-
-### Kamera & Bilder
-- **CameraX** - Kamera-Integration
-- **Glide** - Bildverarbeitung und -anzeige
-- **FileProvider** - Sichere Dateifreigabe
-
-### UI/UX
-- **Material Design Components** - UI-Komponenten
-- **RecyclerView** - Effiziente Listen
-- **ConstraintLayout** - Responsive Layouts
-
-## Projektstruktur 📁
+## App-Struktur
 
 ```
-app/
-├── src/main/java/com/example/happyplacesapp/
-│   ├── data/
-│   │   ├── database/
-│   │   │   ├── HappyPlace.kt          # Entity-Klasse
-│   │   │   ├── HappyPlaceDao.kt       # Database Access Object
-│   │   │   ├── HappyPlaceDatabase.kt  # Room Database
-│   │   │   └── TypeConverters.kt      # Datentyp-Konverter
-│   │   └── repository/
-│   │       └── HappyPlaceRepository.kt # Repository Pattern
-│   ├── ui/
-│   │   ├── adapters/
-│   │   │   └── PlacesAdapter.kt       # RecyclerView Adapter
-│   │   ├── fragments/
-│   │   │   ├── AddPlaceFragment.kt    # Ort hinzufügen/bearbeiten
-│   │   │   ├── MapFragment.kt         # Kartenansicht
-│   │   │   └── PlacesListFragment.kt  # Listenansicht
-│   │   └── viewmodels/
-│   │       ├── HappyPlaceViewModel.kt # ViewModel
-│   │       └── HappyPlaceViewModelFactory.kt
-│   ├── utils/                         # Hilfsfunktionen
-│   └── MainActivity.kt                # Haupt-Activity
-└── src/main/res/
-    ├── layout/                        # Layout-Dateien
-    ├── navigation/                    # Navigation Graph
-    ├── drawable/                      # Icons und Grafiken
-    ├── values/                        # Strings, Colors, etc.
-    └── xml/                          # File Provider Paths
+app/src/main/java/com/example/happyplacesapp/
+├── data/
+│   ├── database/
+│   │   ├── HappyPlace.kt          # Entity-Klasse
+│   │   ├── HappyPlaceDao.kt       # Data Access Object
+│   │   ├── HappyPlaceDatabase.kt  # Room Database
+│   │   └── Converters.kt          # Type Converters
+│   └── repository/
+│       └── HappyPlaceRepository.kt # Repository Pattern
+├── ui/
+│   ├── fragments/
+│   │   ├── MapFragment.kt         # Karten-Ansicht
+│   │   ├── PlacesListFragment.kt  # Listen-Ansicht
+│   │   └── AddPlaceFragment.kt    # Formular
+│   ├── adapters/
+│   │   └── PlacesAdapter.kt       # RecyclerView Adapter
+│   └── viewmodels/
+│       ├── HappyPlaceViewModel.kt # ViewModel
+│       └── HappyPlaceViewModelFactory.kt
+└── MainActivity.kt                # Haupt-Activity
 ```
 
-## Installation & Setup 🚀
+## Konfiguration
+
+### OSMDroid Setup
+```xml
+<!-- Fügen Sie in AndroidManifest.xml hinzu -->
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+- **Foto-Integration**: Fügen Sie Bilder aus der Galerie oder Kamera hinzu
+### FileProvider Setup
+```xml
+<!-- FileProvider für Kamera-Bilder -->
+<provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.provider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+</provider>
+```
+
+### GPS-Probleme
+- **Problem**: Standort wird nicht erkannt
+- **Lösung**: Überprüfen Sie GPS-Einstellungen und App-Berechtigungen
+
+### Kamera-Probleme
+- **Problem**: Kamera öffnet sich nicht
+- **Lösung**: Kamera-Berechtigung in App-Einstellungen aktivieren
+
+### Performance
+- **Problem**: Langsame Karten-Performance
+- **Lösung**: Tile-Cache wird automatisch verwaltet
+
+
+## 📄 Lizenz
+
+```
+MIT License
+
+Copyright (c) 2025 Happy Places App
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+- **Repository Pattern**: Saubere Datenschicht-Abstraktion
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+
+### Abhängigkeiten
+```gradle
+**Happy Places App** - Verwalten Sie Ihre Lieblingsorte digital! 🌍✨
+• androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0
+• org.osmdroid:osmdroid-android:6.1.18
+• com.google.android.gms:play-services-location:21.0.1
+• com.github.bumptech.glide:glide:4.16.0
+• com.google.android.material:material:1.11.0
+```
+
+## 🚀 Installation & Setup
 
 ### Voraussetzungen
-- Android Studio Arctic Fox oder neuer
-- Android SDK 26 (API Level 26) oder höher
-- Kotlin 1.8.0 oder neuer
+- Android Studio Hedgehog oder neuer
+- Android SDK API Level 26+ (Android 8.0)
+- Kotlin 1.8+
+- Gradle 8.0+
 
-### Installation
+### Projekt einrichten
+```bash
 1. Repository klonen:
-   ```bash
-   git clone https://github.com/yourusername/HappyPlacesApp.git
-   ```
+   git clone [repository-url]
 
-2. Projekt in Android Studio öffnen
+2. Projekt in Android Studio öffnen:
+   File → Open → Projektordner auswählen
 
-3. Gradle Sync durchführen
+3. Gradle Sync ausführen:
+   Gradle sync wird automatisch gestartet
 
-4. App auf Gerät oder Emulator ausführen
+4. App auf Gerät/Emulator ausführen:
+   Run → Run 'app'
+```
 
 ### Berechtigungen
 Die App benötigt folgende Berechtigungen:
-- **Kamera**: Für Fotoaufnahmen
-- **Standort**: Für aktuelle Position
-- **Speicher**: Für Bildspeicherung
-- **Internet**: Für Kartendaten
+```
+• ACCESS_FINE_LOCATION - Präzise Standortbestimmung
+• ACCESS_COARSE_LOCATION - Grobe Standortbestimmung
+• CAMERA - Foto-Aufnahme
+• READ_EXTERNAL_STORAGE - Galerie-Zugriff
+• WRITE_EXTERNAL_STORAGE - Bilderspeicherung (API < 29)
+• INTERNET - Karten-Tiles laden
+```
 
-## Verwendung 📱
-
-### Neuen Ort hinzufügen
-1. Auf **+**-Button tippen (in Liste oder auf Karte)
-2. Foto aufnehmen oder aus Galerie wählen (optional)
-3. Titel und Beschreibung eingeben
-4. Kategorie auswählen
-5. Standort automatisch setzen oder manuell wählen
-6. Notizen hinzufügen (optional)
-7. **Speichern** antippen
-
-### Orte verwalten
-- **Bearbeiten**: Ort in Liste auswählen → Bearbeiten-Button
-- **Löschen**: Ort in Liste nach links/rechts wischen
-- **Anzeigen**: Zwischen Listen- und Kartenansicht wechseln
-
-### Karten-Features
-- **Marker**: Alle gespeicherten Orte als Marker
-- **Aktueller Standort**: Eigene Position anzeigen
-- **Navigation**: Zu eigenem Standort navigieren
-- **Hinzufügen**: Auf Karte tippen um neuen Ort hinzuzufügen
-
-## Sicherheit & Datenschutz 🔒
-
-- **Lokale Speicherung**: Alle Daten bleiben auf dem Gerät
-- **Keine Cloud-Sync**: Keine Datenübertragung an externe Server
-- **Sichere Bildverwaltung**: FileProvider für sichere Dateifreigabe
-- **Berechtigungsanfragen**: Nur bei Bedarf angefordert
-
-## Erweiterte Features 🎯
-
-### Geplante Features
-- **Suchfunktion**: Orte nach Name oder Kategorie suchen
-- **Export/Import**: Daten sichern und wiederherstellen
-- **Kategorien-Filter**: Orte nach Kategorien filtern
-- **Navigation**: Integration mit externen Navigations-Apps
-- **Sharing**: Orte mit anderen teilen
-
-## Fehlerbehebung 🔧
-
-### Häufige Probleme
+## Fehlerbehebung 
 
 **Karte wird nicht angezeigt:**
 - Internetverbindung prüfen
@@ -163,18 +172,4 @@ Die App benötigt folgende Berechtigungen:
 
 Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe [LICENSE](LICENSE) für Details.
 
-## Beitragen 🤝
 
-Beiträge sind willkommen! Bitte:
-1. Fork das Repository
-2. Feature Branch erstellen
-3. Änderungen commiten
-4. Pull Request erstellen
-
-## Kontakt 📧
-
-Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
-
----
-
-**Happy Places App** - Bewahren Sie Ihre schönsten Erinnerungen! 🌍✨

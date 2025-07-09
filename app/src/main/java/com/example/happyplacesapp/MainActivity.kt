@@ -30,6 +30,16 @@ class MainActivity : AppCompatActivity() {
 
         // Setup ActionBar mit NavController
         setupActionBarWithNavController(navController)
+
+        // Dynamische Toolbar-Titel basierend auf dem Fragment
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.toolbar.title = when (destination.id) {
+                R.id.placesListFragment -> "Meine Orte"
+                R.id.mapFragment -> "Karte"
+                R.id.addPlaceFragment -> "Ort hinzufügen"
+                else -> getString(R.string.app_name)
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

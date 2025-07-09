@@ -186,13 +186,40 @@ class MapFragment : Fragment() {
     private fun getCurrentLocationAndAddPlace() {
         if (hasLocationPermission()) {
             try {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        showAddPlaceDialog(location.latitude, location.longitude)
-                    } else {
-                        Toast.makeText(requireContext(), "Standort konnte nicht ermittelt werden", Toast.LENGTH_SHORT).show()
+                // Direkter GPS-Ansatz wie im AddPlaceFragment
+                val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
+                    com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                    2000
+                ).apply {
+                    setMaxUpdates(1)
+                    setWaitForAccurateLocation(false)
+                    setMaxUpdateAgeMillis(30000)
+                }.build()
+
+                val locationCallback = object : com.google.android.gms.location.LocationCallback() {
+                    override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+                        locationResult.lastLocation?.let { location ->
+                            if (location.latitude != 0.0 && location.longitude != 0.0) {
+                                showAddPlaceDialog(location.latitude, location.longitude)
+                            } else {
+                                // Fallback zu letztem bekannten Standort
+                                tryLastKnownLocationForAdd()
+                            }
+                        } ?: run {
+                            tryLastKnownLocationForAdd()
+                        }
+                        fusedLocationClient.removeLocationUpdates(this)
                     }
                 }
+
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+                // Timeout nach 3 Sekunden
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    fusedLocationClient.removeLocationUpdates(locationCallback)
+                    tryLastKnownLocationForAdd()
+                }, 3000)
+
             } catch (e: SecurityException) {
                 requestLocationPermission()
             }
@@ -212,23 +239,108 @@ class MapFragment : Fragment() {
         )
     }
 
+    private fun tryLastKnownLocationForAdd() {
+        if (!hasLocationPermission()) {
+            showAddPlaceDialog(50.9375, 6.9603) // Köln Fallback
+            return
+        }
+
+        try {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null && location.latitude != 0.0 && location.longitude != 0.0) {
+                    showAddPlaceDialog(location.latitude, location.longitude)
+                } else {
+                    showAddPlaceDialog(50.9375, 6.9603) // Köln Fallback
+                }
+            }.addOnFailureListener {
+                showAddPlaceDialog(50.9375, 6.9603) // Köln Fallback
+            }
+        } catch (e: SecurityException) {
+            showAddPlaceDialog(50.9375, 6.9603) // Köln Fallback
+        }
+    }
+
     private fun goToMyLocation() {
         if (hasLocationPermission()) {
             try {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        val geoPoint = GeoPoint(location.latitude, location.longitude)
-                        mapView.controller.animateTo(geoPoint)
-                        mapView.controller.setZoom(15.0)
-                    } else {
-                        Toast.makeText(requireContext(), "Standort konnte nicht ermittelt werden", Toast.LENGTH_SHORT).show()
+                // Direkter GPS-Ansatz
+                val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
+                    com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                    2000
+                ).apply {
+                    setMaxUpdates(1)
+                    setWaitForAccurateLocation(false)
+                    setMaxUpdateAgeMillis(30000)
+                }.build()
+
+                val locationCallback = object : com.google.android.gms.location.LocationCallback() {
+                    override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+                        locationResult.lastLocation?.let { location ->
+                            if (location.latitude != 0.0 && location.longitude != 0.0) {
+                                val geoPoint = GeoPoint(location.latitude, location.longitude)
+                                mapView.controller.animateTo(geoPoint)
+                                mapView.controller.setZoom(15.0)
+                                Toast.makeText(requireContext(), "Standort gefunden!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                tryLastKnownLocationForNavigation()
+                            }
+                        } ?: run {
+                            tryLastKnownLocationForNavigation()
+                        }
+                        fusedLocationClient.removeLocationUpdates(this)
                     }
                 }
+
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+                // Timeout nach 3 Sekunden
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    fusedLocationClient.removeLocationUpdates(locationCallback)
+                    tryLastKnownLocationForNavigation()
+                }, 3000)
+
             } catch (e: SecurityException) {
                 requestLocationPermission()
             }
         } else {
             requestLocationPermission()
+        }
+    }
+
+    private fun tryLastKnownLocationForNavigation() {
+        if (!hasLocationPermission()) {
+            // Fallback zu Köln
+            val geoPoint = GeoPoint(50.9375, 6.9603)
+            mapView.controller.animateTo(geoPoint)
+            mapView.controller.setZoom(12.0)
+            Toast.makeText(requireContext(), "Fallback: Köln angezeigt", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        try {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null && location.latitude != 0.0 && location.longitude != 0.0) {
+                    val geoPoint = GeoPoint(location.latitude, location.longitude)
+                    mapView.controller.animateTo(geoPoint)
+                    mapView.controller.setZoom(15.0)
+                    Toast.makeText(requireContext(), "Letzter bekannter Standort", Toast.LENGTH_SHORT).show()
+                } else {
+                    val geoPoint = GeoPoint(50.9375, 6.9603)
+                    mapView.controller.animateTo(geoPoint)
+                    mapView.controller.setZoom(12.0)
+                    Toast.makeText(requireContext(), "Fallback: Köln angezeigt", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                val geoPoint = GeoPoint(50.9375, 6.9603)
+                mapView.controller.animateTo(geoPoint)
+                mapView.controller.setZoom(12.0)
+                Toast.makeText(requireContext(), "Fallback: Köln angezeigt", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: SecurityException) {
+            val geoPoint = GeoPoint(50.9375, 6.9603)
+            mapView.controller.animateTo(geoPoint)
+            mapView.controller.setZoom(12.0)
+            Toast.makeText(requireContext(), "Fallback: Köln angezeigt", Toast.LENGTH_SHORT).show()
         }
     }
 
